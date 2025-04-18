@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react"
 import { ContactForm } from "@/components/contact-form"
-import { ThemeLogo } from "@/components/theme-logo"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Mail, PrinterIcon as Printer3d, Layers, Code } from "lucide-react"
+import { Mail, PrinterIcon as Printer3d, Layers, Code } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
 
 export default function Home() {
   const [mounted, setMounted] = useState(false)
@@ -14,6 +14,14 @@ export default function Home() {
     setMounted(true)
   }, [])
 
+  // Function to scroll to contact form
+  const scrollToContact = () => {
+    const contactSection = document.getElementById("contact-section")
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: "smooth" })
+    }
+  }
+
   if (!mounted) return null
 
   return (
@@ -21,13 +29,17 @@ export default function Home() {
       {/* Navigation - Always Black */}
       <header className="w-full py-4 px-6 flex items-center justify-between bg-black z-20 sticky top-0">
         <div className="flex items-center gap-2">
-          {/* Use dark mode logo in header */}
-          <Image src="/images/dark-logo-header.png" alt="Lion Mystic Designs Logo" width={40} height={40} />
+          {/* Use dark mode logo in header - reduced by 10% */}
+          <Image src="/images/dark-logo-header.png" alt="Lion Mystic Designs Logo" width={36} height={36} />
           <span className="font-bold text-xl text-white">Lion Mystic Designs</span>
         </div>
         <div className="flex items-center">
           {/* Contact Us button */}
-          <Button variant="outline" className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10">
+          <Button
+            variant="outline"
+            className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
+            onClick={scrollToContact}
+          >
             Contact Us
           </Button>
         </div>
@@ -36,8 +48,15 @@ export default function Home() {
       {/* Main content with padding at bottom to account for fixed footer */}
       <main className="flex-1 flex flex-col pb-[72px]">
         <section className="py-16 md:py-20 px-6 flex flex-col items-center justify-center text-center max-w-5xl mx-auto">
-          <div className="mb-8 relative w-48 h-48 md:w-64 md:h-64 animate-fade-in" style={{ animationDelay: "0.2s" }}>
-            <ThemeLogo type="center" className="w-full h-full" applyEffect="glow" />
+          <div className="mb-8 relative w-64 h-64 md:w-80 md:h-80 animate-fade-in" style={{ animationDelay: "0.2s" }}>
+            {/* Main landing page logo */}
+            <Image
+              src="/images/lion-mystic-logo-blue.png"
+              alt="Lion Mystic Designs Logo"
+              fill
+              className="object-contain"
+              priority
+            />
           </div>
 
           <h1
@@ -59,12 +78,15 @@ export default function Home() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 animate-fade-in" style={{ animationDelay: "0.8s" }}>
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 text-lg rounded-full flex items-center gap-2 animate-glow">
+            {/* Get Notified button hidden for now
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 text-lg rounded-full flex items-center gap-2">
               Get Notified <ArrowRight className="h-5 w-5" />
             </Button>
+            */}
             <Button
               variant="outline"
               className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10 px-8 py-6 text-lg rounded-full flex items-center gap-2"
+              onClick={scrollToContact}
             >
               <Mail className="h-5 w-5" /> Contact Us
             </Button>
@@ -137,7 +159,7 @@ export default function Home() {
         </section>
 
         {/* Contact Form */}
-        <section className="py-12 px-6 animate-fade-in" style={{ animationDelay: "1.2s" }}>
+        <section id="contact-section" className="py-12 px-6 animate-fade-in" style={{ animationDelay: "1.2s" }}>
           <div className="max-w-md mx-auto glass-effect p-8">
             <ContactForm />
           </div>
@@ -158,16 +180,20 @@ export default function Home() {
               variant="outline"
               size="sm"
               className="h-8 text-xs border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
+              asChild
             >
-              Privacy
+              <Link href="/privacy">Privacy</Link>
             </Button>
+            {/* Terms button hidden for now
             <Button
               variant="outline"
               size="sm"
               className="h-8 text-xs border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
+              asChild
             >
-              Terms
+              <Link href="/terms">Terms</Link>
             </Button>
+            */}
           </div>
         </div>
       </footer>

@@ -52,7 +52,11 @@ export function ContactForm() {
 
   return (
     <div className="w-full">
-      <h2 className="text-2xl font-semibold mb-6 text-gradient">Get in Touch</h2>
+      <h2 className="text-2xl font-semibold mb-3 text-gradient">Get in Touch</h2>
+      <p className="text-gray-300 mb-6">
+        Have questions about our services or products? Need a custom design? Reach out to us using the form below, and
+        we'll get back to you as soon as possible.
+      </p>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <Input
