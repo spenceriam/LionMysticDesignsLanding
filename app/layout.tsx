@@ -19,14 +19,23 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <head>
-        {/* Force dark background with inline style to override any CSS issues */}
+        {/* Enhanced gradient background with inline style */}
         <style
           dangerouslySetInnerHTML={{
             __html: `
           body {
-            background: #111827 !important; /* Dark background */
-            background-image: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.15), rgba(30, 64, 175, 0.25), rgba(17, 24, 39, 0.95)) !important;
+            background: #111827 !important; /* Dark base */
+            background-image: radial-gradient(circle at 50% 50%, 
+              rgba(59, 130, 246, 0.2) 0%, 
+              rgba(37, 99, 235, 0.25) 25%, 
+              rgba(30, 64, 175, 0.2) 50%, 
+              rgba(17, 24, 39, 0.9) 100%) !important;
             background-attachment: fixed !important;
+          }
+          
+          /* Remove the dark overlay to let gradient show more */
+          body::before {
+            display: none !important;
           }
         `,
           }}

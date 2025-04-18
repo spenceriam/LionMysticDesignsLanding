@@ -56,27 +56,21 @@
 
   body {
     @apply bg-background text-foreground;
-    /* Dark background with minimal blue gradient */
+    /* Enhanced gradient with more visible blue tones while keeping it dark */
     background: #111827;
     background-image: radial-gradient(
       circle at 50% 50%,
-      rgba(59, 130, 246, 0.15) 0%,
-      rgba(30, 64, 175, 0.25) 40%,
-      rgba(17, 24, 39, 0.95) 100%
+      rgba(59, 130, 246, 0.2) 0%,
+      rgba(37, 99, 235, 0.25) 25%,
+      rgba(30, 64, 175, 0.2) 50%,
+      rgba(17, 24, 39, 0.9) 100%
     );
     background-attachment: fixed;
   }
 
-  /* Add a dark overlay to ensure darkness */
+  /* Remove the dark overlay to let gradient show more */
   body::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.3);
-    z-index: -1;
+    display: none;
   }
 
   @keyframes fadeIn {
