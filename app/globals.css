@@ -1,0 +1,242 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 20 14.3% 4.1%;
+    --card: 0 0% 100%;
+    --card-foreground: 20 14.3% 4.1%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 20 14.3% 4.1%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 60 9.1% 97.8%;
+    --secondary: 220 14.3% 95.9%;
+    --secondary-foreground: 220.9 39.3% 11%;
+    --muted: 220 14.3% 95.9%;
+    --muted-foreground: 220 8.9% 46.1%;
+    --accent: 220 14.3% 95.9%;
+    --accent-foreground: 220.9 39.3% 11%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 60 9.1% 97.8%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 224 71.4% 4.1%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 224 71.4% 4.1%;
+    --foreground: 210 20% 98%;
+    --card: 224 71.4% 4.1%;
+    --card-foreground: 210 20% 98%;
+    --popover: 224 71.4% 4.1%;
+    --popover-foreground: 210 20% 98%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 210 20% 98%;
+    --secondary: 215 27.9% 16.9%;
+    --secondary-foreground: 210 20% 98%;
+    --muted: 215 27.9% 16.9%;
+    --muted-foreground: 217.9 10.6% 64.9%;
+    --accent: 215 27.9% 16.9%;
+    --accent-foreground: 210 20% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 215 27.9% 16.9%;
+    --input: 215 27.9% 16.9%;
+    --ring: 216 34% 17%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    background: radial-gradient(
+      circle at 50% 50%,
+      rgba(59, 130, 246, 0.5) 0%,
+      rgba(30, 64, 175, 0.7) 50%,
+      rgba(17, 24, 39, 0.9) 100%
+    );
+    background-attachment: fixed;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes glow {
+    0% {
+      box-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
+    }
+    50% {
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.8);
+    }
+    100% {
+      box-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
+    }
+  }
+
+  @keyframes gradientShift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  @keyframes borderRotate {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes textGradientAnimation {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.8s ease-out forwards;
+  }
+
+  .animate-glow {
+    animation: glow 3s infinite;
+  }
+
+  .glass-effect {
+    background: rgba(15, 23, 42, 0.3);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+  }
+
+  .text-gradient {
+    background: linear-gradient(to right, #60a5fa, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .animated-text-gradient {
+    background: linear-gradient(90deg, #60a5fa, #3b82f6, #2563eb, #1d4ed8, #60a5fa);
+    background-size: 300% 100%;
+    animation: textGradientAnimation 6s ease infinite;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Static Logo Glow Effect (Softer Edges) */
+  .logo-glow-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  .logo-glow-container::after {
+    content: "";
+    position: absolute;
+    top: -20%;
+    left: -20%;
+    right: -20%;
+    bottom: -20%;
+    z-index: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(96, 165, 250, 0.8), rgba(59, 130, 246, 0.6), rgba(37, 99, 235, 0.3));
+    opacity: 0.7;
+    filter: blur(40px);
+  }
+
+  /* Logo Background Effect */
+  .logo-background-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  .logo-background-container::before {
+    content: "";
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    right: 10%;
+    bottom: 10%;
+    z-index: 0;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #60a5fa, #3b82f6, #1e40af, #2563eb);
+    background-size: 300% 300%;
+    animation: gradientShift 8s ease infinite;
+    opacity: 0.3;
+  }
+
+  /* Logo Border Effect */
+  .logo-border-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  .logo-border-container::before {
+    content: "";
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    z-index: 0;
+    border-radius: 50%;
+    background: conic-gradient(#60a5fa, #3b82f6, #1e40af, #2563eb, #60a5fa);
+    animation: borderRotate 8s linear infinite;
+    opacity: 0.7;
+  }
+
+  .logo-border-container::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    border-radius: 50%;
+    background: rgba(15, 23, 42, 0.7);
+    margin: 3px;
+  }
+
+  .construction-sign {
+    width: 40px;
+    height: 40px;
+    color: #ffc107;
+    opacity: 0.8;
+    filter: drop-shadow(0 0 8px rgba(255, 193, 7, 0.5));
+    animation: glow 3s infinite;
+  }
+
+  @media (min-width: 768px) {
+    .construction-sign {
+      width: 50px;
+      height: 50px;
+    }
+  }
+}
