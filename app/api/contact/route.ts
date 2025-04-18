@@ -10,6 +10,8 @@ const transporter = nodemailer.createTransport({
     user: process.env.EMAIL_USER || "contact@lionmystic.com",
     pass: process.env.EMAIL_PASS,
   },
+  debug: true, // Enable debug output
+  logger: true, // Log information about the transport
 })
 
 export async function POST(request: Request) {
@@ -22,6 +24,7 @@ export async function POST(request: Request) {
       port: process.env.EMAIL_PORT,
       user: process.env.EMAIL_USER,
       passProvided: !!process.env.EMAIL_PASS,
+      passLength: process.env.EMAIL_PASS ? process.env.EMAIL_PASS.length : 0,
     })
 
     const body = await request.json()
@@ -41,26 +44,34 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "Invalid email format" }, { status: 400 })
     }
 
-    // Verify transporter connection
-    try {
-      console.log("Verifying SMTP connection...")
-      await transporter.verify()
-      console.log("SMTP connection verified successfully")
-    } catch (verifyError) {
-      console.error("SMTP verification failed:", verifyError)
+    // Check if EMAIL_PASS is properly set
+    if (!process.env.EMAIL_PASS || process.env.EMAIL_PASS.trim() === "") {
+      console.error("EMAIL_PASS environment variable is missing or empty")
       return NextResponse.json(
         {
-          message: "Email server connection failed",
-          error: (verifyError as Error).message,
+          message: "Email configuration error: Missing password",
+          error: "EMAIL_PASS environment variable is not properly set",
         },
         { status: 500 },
       )
     }
 
-    // Send email
+    // Check if EMAIL_USER is properly set
+    if (!process.env.EMAIL_USER || process.env.EMAIL_USER.trim() === "") {
+      console.error("EMAIL_USER environment variable is missing or empty")
+      return NextResponse.json(
+        {
+          message: "Email configuration error: Missing username",
+          error: "EMAIL_USER environment variable is not properly set",
+        },
+        { status: 500 },
+      )
+    }
+
+    // Try a different authentication approach
     const mailOptions = {
-      from: `"Lion Mystic Designs" <${process.env.EMAIL_USER || "contact@lionmystic.com"}>`,
-      to: process.env.EMAIL_USER || "contact@lionmystic.com",
+      from: `"Lion Mystic Designs" <${process.env.EMAIL_USER}>`,
+      to: process.env.EMAIL_USER,
       replyTo: email,
       subject: `New Contact Form Message from ${name}`,
       text: `
@@ -104,10 +115,18 @@ ${message}
       )
     } catch (emailError) {
       console.error("Failed to send email:", emailError)
+
+      // Try to get more detailed error information
+      let errorDetails = "Unknown error"
+      if (emailError instanceof Error) {
+        errorDetails = emailError.message
+        console.error("Error stack:", emailError.stack)
+      }
+
       return NextResponse.json(
         {
           message: "Failed to send email",
-          error: (emailError as Error).message,
+          error: errorDetails,
         },
         { status: 500 },
       )
