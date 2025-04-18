@@ -28,9 +28,19 @@ export function ContactForm() {
     setIsSubmitting(true)
 
     try {
-      // In a real implementation, you would send this data to your API
-      // For now, we'll simulate a successful submission
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || "Something went wrong")
+      }
 
       toast({
         title: "Message sent!",
@@ -42,7 +52,7 @@ export function ContactForm() {
     } catch (error) {
       toast({
         title: "Something went wrong.",
-        description: "Your message couldn't be sent. Please try again.",
+        description: (error as Error).message || "Your message couldn't be sent. Please try again.",
         variant: "destructive",
       })
     } finally {
