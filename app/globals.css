@@ -56,11 +56,12 @@
 
   body {
     @apply bg-background text-foreground;
+    /* Darker gradient with more contrast and deeper colors */
     background: radial-gradient(
       circle at 50% 50%,
-      rgba(59, 130, 246, 0.5) 0%,
-      rgba(30, 64, 175, 0.7) 50%,
-      rgba(17, 24, 39, 0.9) 100%
+      rgba(59, 130, 246, 0.3) 0%,
+      rgba(30, 64, 175, 0.5) 40%,
+      rgba(17, 24, 39, 0.95) 100%
     );
     background-attachment: fixed;
   }
