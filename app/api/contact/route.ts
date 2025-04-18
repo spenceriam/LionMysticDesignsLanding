@@ -14,17 +14,47 @@ const transporter = nodemailer.createTransport({
 
 export async function POST(request: Request) {
   try {
+    console.log("Contact form submission received")
+
+    // Log environment variables (without showing the actual password)
+    console.log("SMTP Configuration:", {
+      host: process.env.EMAIL_HOST,
+      port: process.env.EMAIL_PORT,
+      user: process.env.EMAIL_USER,
+      passProvided: !!process.env.EMAIL_PASS,
+    })
+
     const body = await request.json()
     const { name, email, message } = body
 
+    console.log("Form data received:", { name, email, messageLength: message?.length })
+
     if (!name || !email || !message) {
+      console.log("Missing required fields:", { name: !!name, email: !!email, message: !!message })
       return NextResponse.json({ message: "Missing required fields" }, { status: 400 })
     }
 
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
+      console.log("Invalid email format:", email)
       return NextResponse.json({ message: "Invalid email format" }, { status: 400 })
+    }
+
+    // Verify transporter connection
+    try {
+      console.log("Verifying SMTP connection...")
+      await transporter.verify()
+      console.log("SMTP connection verified successfully")
+    } catch (verifyError) {
+      console.error("SMTP verification failed:", verifyError)
+      return NextResponse.json(
+        {
+          message: "Email server connection failed",
+          error: (verifyError as Error).message,
+        },
+        { status: 500 },
+      )
     }
 
     // Send email
@@ -56,11 +86,40 @@ ${message}
       `,
     }
 
-    await transporter.sendMail(mailOptions)
+    console.log("Attempting to send email...")
 
-    return NextResponse.json({ message: "Message sent successfully" }, { status: 200 })
+    try {
+      const info = await transporter.sendMail(mailOptions)
+      console.log("Email sent successfully:", {
+        messageId: info.messageId,
+        response: info.response,
+      })
+
+      return NextResponse.json(
+        {
+          message: "Message sent successfully",
+          messageId: info.messageId,
+        },
+        { status: 200 },
+      )
+    } catch (emailError) {
+      console.error("Failed to send email:", emailError)
+      return NextResponse.json(
+        {
+          message: "Failed to send email",
+          error: (emailError as Error).message,
+        },
+        { status: 500 },
+      )
+    }
   } catch (error) {
-    console.error("Error in contact form:", error)
-    return NextResponse.json({ message: "Something went wrong", error: (error as Error).message }, { status: 500 })
+    console.error("Unexpected error in contact form:", error)
+    return NextResponse.json(
+      {
+        message: "Something went wrong",
+        error: (error as Error).message,
+      },
+      { status: 500 },
+    )
   }
 }

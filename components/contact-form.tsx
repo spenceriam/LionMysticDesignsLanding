@@ -7,11 +7,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
-import { Send } from "lucide-react"
+import { Send, ThumbsUp } from "lucide-react"
 
 export function ContactForm() {
   const { toast } = useToast()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitted, setIsSubmitted] = useState(false)
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -21,6 +22,11 @@ export function ContactForm() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
+
+    // Reset submitted state if user starts typing again
+    if (isSubmitted) {
+      setIsSubmitted(false)
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -28,6 +34,8 @@ export function ContactForm() {
     setIsSubmitting(true)
 
     try {
+      console.log("Submitting form data:", formData)
+
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: {
@@ -36,7 +44,9 @@ export function ContactForm() {
         body: JSON.stringify(formData),
       })
 
+      console.log("Response status:", response.status)
       const data = await response.json()
+      console.log("Response data:", data)
 
       if (!response.ok) {
         throw new Error(data.message || "Something went wrong")
@@ -47,9 +57,14 @@ export function ContactForm() {
         description: "We'll get back to you as soon as possible.",
       })
 
+      // Set submitted state to true
+      setIsSubmitted(true)
+
       // Reset form
       setFormData({ name: "", email: "", message: "" })
     } catch (error) {
+      console.error("Form submission error:", error)
+
       toast({
         title: "Something went wrong.",
         description: (error as Error).message || "Your message couldn't be sent. Please try again.",
@@ -102,9 +117,21 @@ export function ContactForm() {
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white h-12 rounded-full flex items-center justify-center gap-2"
+          className={`w-full h-12 rounded-full flex items-center justify-center gap-2 transition-colors duration-300 ${
+            isSubmitted ? "bg-green-600 hover:bg-green-700 text-white" : "bg-blue-600 hover:bg-blue-700 text-white"
+          }`}
         >
-          {isSubmitting ? "Sending..." : "Send Message"} <Send className="h-4 w-4" />
+          {isSubmitting ? (
+            "Sending..."
+          ) : isSubmitted ? (
+            <>
+              Sent <ThumbsUp className="h-4 w-4" />
+            </>
+          ) : (
+            <>
+              Send Message <Send className="h-4 w-4" />
+            </>
+          )}
         </Button>
       </form>
     </div>
