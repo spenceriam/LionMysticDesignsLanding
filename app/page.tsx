@@ -1,9 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { ContactForm } from "@/components/contact-form"
 import { Button } from "@/components/ui/button"
-import { Mail, PrinterIcon as Printer3d, Layers, Code } from "lucide-react"
+import { PrinterIcon as Printer3d, Layers, Code } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 
@@ -13,14 +12,6 @@ export default function Home() {
   useEffect(() => {
     setMounted(true)
   }, [])
-
-  // Function to scroll to contact form
-  const scrollToContact = () => {
-    const contactSection = document.getElementById("contact-section")
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: "smooth" })
-    }
-  }
 
   if (!mounted) return null
 
@@ -33,16 +24,7 @@ export default function Home() {
           <Image src="/images/dark-logo-header.png" alt="Lion Mystic Designs Logo" width={36} height={36} />
           <span className="font-bold text-xl text-white">Lion Mystic Designs</span>
         </div>
-        <div className="flex items-center">
-          {/* Contact Us button */}
-          <Button
-            variant="outline"
-            className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
-            onClick={scrollToContact}
-          >
-            Contact Us
-          </Button>
-        </div>
+        <div className="flex items-center">{/* Contact Us button removed */}</div>
       </header>
 
       {/* Main content with padding at bottom to account for fixed footer */}
@@ -83,13 +65,6 @@ export default function Home() {
               Get Notified <ArrowRight className="h-5 w-5" />
             </Button>
             */}
-            <Button
-              variant="outline"
-              className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10 px-8 py-6 text-lg rounded-full flex items-center gap-2"
-              onClick={scrollToContact}
-            >
-              <Mail className="h-5 w-5" /> Contact Us
-            </Button>
           </div>
         </section>
 
@@ -155,13 +130,6 @@ export default function Home() {
                 </p>
               </div>
             </div>
-          </div>
-        </section>
-
-        {/* Contact Form */}
-        <section id="contact-section" className="py-12 px-6 animate-fade-in" style={{ animationDelay: "1.2s" }}>
-          <div className="max-w-md mx-auto glass-effect p-8">
-            <ContactForm />
           </div>
         </section>
       </main>
