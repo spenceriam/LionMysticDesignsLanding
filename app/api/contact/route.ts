@@ -1,29 +1,77 @@
 import { NextResponse } from "next/server"
 import nodemailer from "nodemailer"
 
-// Create a transporter with SMTP settings
-const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST,
-  port: Number.parseInt(process.env.EMAIL_PORT || "587"),
-  secure: process.env.EMAIL_PORT === "465", // true for 465, false for other ports
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-})
-
 export async function POST(request: Request) {
   try {
     console.log("Contact form submission received")
 
+    // Validate environment variables first
+    const host = process.env.EMAIL_HOST
+    const port = process.env.EMAIL_PORT
+    const user = process.env.EMAIL_USER
+    const pass = process.env.EMAIL_PASS
+    const to = process.env.EMAIL_TO
+
     // Log configuration (without exposing sensitive data)
     console.log("Email Configuration:", {
-      host: process.env.EMAIL_HOST,
-      port: process.env.EMAIL_PORT,
-      secure: process.env.EMAIL_PORT === "465",
-      from: process.env.EMAIL_USER,
-      to: process.env.EMAIL_TO,
+      host: host || "NOT SET",
+      port: port || "NOT SET",
+      secure: port === "465",
+      from: user || "NOT SET",
+      to: to || "NOT SET",
+      hasPassword: pass ? "YES" : "NO",
     })
+
+    // Validate required variables
+    if (!host || host === "127.0.0.1" || host === "localhost") {
+      console.error(`Invalid EMAIL_HOST: ${host || "not set"}`)
+      return NextResponse.json(
+        {
+          message: "Server configuration error: Invalid SMTP host",
+        },
+        { status: 500 },
+      )
+    }
+
+    if (!port) {
+      console.error("EMAIL_PORT not set")
+      return NextResponse.json(
+        {
+          message: "Server configuration error: SMTP port not set",
+        },
+        { status: 500 },
+      )
+    }
+
+    if (!user) {
+      console.error("EMAIL_USER not set")
+      return NextResponse.json(
+        {
+          message: "Server configuration error: SMTP username not set",
+        },
+        { status: 500 },
+      )
+    }
+
+    if (!pass) {
+      console.error("EMAIL_PASS not set")
+      return NextResponse.json(
+        {
+          message: "Server configuration error: SMTP password not set",
+        },
+        { status: 500 },
+      )
+    }
+
+    if (!to) {
+      console.error("EMAIL_TO not set")
+      return NextResponse.json(
+        {
+          message: "Server configuration error: Recipient email not set",
+        },
+        { status: 500 },
+      )
+    }
 
     const body = await request.json()
     const { name, email, message } = body
@@ -38,10 +86,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "Invalid email format" }, { status: 400 })
     }
 
+    // Create a transporter with SMTP settings
+    const transporter = nodemailer.createTransport({
+      host: host,
+      port: Number.parseInt(port),
+      secure: port === "465", // true for 465, false for other ports
+      auth: {
+        user: user,
+        pass: pass,
+      },
+    })
+
     // Prepare email content
     const mailOptions = {
-      from: `"Lion Mystic" <${process.env.EMAIL_USER}>`,
-      to: process.env.EMAIL_TO,
+      from: `"Lion Mystic" <${user}>`,
+      to: to,
       replyTo: email, // This allows you to reply directly to the person who submitted the form
       subject: `New Contact Form Message from ${name}`,
       text: `

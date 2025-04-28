@@ -3,55 +3,110 @@ import nodemailer from "nodemailer"
 
 export async function GET(request: Request) {
   try {
-    // Log all environment variables (except password)
-    console.log("Email Environment Variables:", {
-      host: process.env.EMAIL_HOST || "not set",
-      port: process.env.EMAIL_PORT || "not set",
-      user: process.env.EMAIL_USER || "not set",
-      to: process.env.EMAIL_TO || "not set",
-      hasPassword: process.env.EMAIL_PASS ? "yes" : "no",
+    // Validate environment variables first
+    const host = process.env.EMAIL_HOST
+    const port = process.env.EMAIL_PORT
+    const user = process.env.EMAIL_USER
+    const pass = process.env.EMAIL_PASS
+    const to = process.env.EMAIL_TO
+
+    // Log all environment variables for debugging
+    console.log("Email Environment Variables Check:", {
+      host: host || "NOT SET",
+      port: port || "NOT SET",
+      user: user || "NOT SET",
+      to: to || "NOT SET",
+      hasPassword: pass ? "YES" : "NO",
     })
+
+    // Validate required variables
+    if (!host || host === "127.0.0.1" || host === "localhost") {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Invalid EMAIL_HOST configuration",
+          error: `EMAIL_HOST is ${!host ? "not set" : "set to localhost"}. Please set it to your SMTP server address.`,
+          currentValue: host || "undefined",
+        },
+        { status: 500 },
+      )
+    }
+
+    if (!port) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Invalid EMAIL_PORT configuration",
+          error: "EMAIL_PORT is not set. Please set it to your SMTP server port.",
+        },
+        { status: 500 },
+      )
+    }
+
+    if (!user) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Invalid EMAIL_USER configuration",
+          error: "EMAIL_USER is not set. Please set it to your SMTP username/email.",
+        },
+        { status: 500 },
+      )
+    }
+
+    if (!pass) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Invalid EMAIL_PASS configuration",
+          error: "EMAIL_PASS is not set. Please set it to your SMTP password.",
+        },
+        { status: 500 },
+      )
+    }
+
+    if (!to) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Invalid EMAIL_TO configuration",
+          error: "EMAIL_TO is not set. Please set it to the recipient email address.",
+        },
+        { status: 500 },
+      )
+    }
 
     // Create a transporter with SMTP settings
     const transporterConfig = {
-      host: process.env.EMAIL_HOST,
-      port: Number.parseInt(process.env.EMAIL_PORT || "587"),
-      secure: process.env.EMAIL_PORT === "465", // true for 465, false for other ports
+      host: host, // Use the validated host
+      port: Number.parseInt(port),
+      secure: port === "465", // true for 465, false for other ports
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: user,
+        pass: pass,
       },
     }
 
     console.log("Creating transporter with config:", {
-      ...transporterConfig,
+      host: transporterConfig.host,
+      port: transporterConfig.port,
+      secure: transporterConfig.secure,
       auth: { user: transporterConfig.auth.user, pass: "********" }, // Hide password in logs
     })
 
     const transporter = nodemailer.createTransport(transporterConfig)
 
-    // Log configuration (without exposing sensitive data)
-    const config = {
-      host: process.env.EMAIL_HOST,
-      port: process.env.EMAIL_PORT,
-      secure: process.env.EMAIL_PORT === "465",
-      from: process.env.EMAIL_USER,
-      to: process.env.EMAIL_TO,
-    }
-
-    console.log("Testing email configuration:", config)
-
     try {
       // Verify connection
-      console.log("Verifying SMTP connection...")
+      console.log(`Attempting to verify SMTP connection to ${host}:${port}...`)
       await transporter.verify()
       console.log("SMTP connection verified successfully")
 
       // Send test email
-      console.log("Sending test email...")
+      console.log(`Sending test email from ${user} to ${to}...`)
       const info = await transporter.sendMail({
-        from: `"Lion Mystic Test" <${process.env.EMAIL_USER}>`,
-        to: process.env.EMAIL_TO,
+        from: `"Lion Mystic Test" <${user}>`,
+        to: to,
         subject: "Test Email from Lion Mystic",
         text: "This is a test email to verify SMTP settings are working correctly.",
         html: `
@@ -62,11 +117,11 @@ export async function GET(request: Request) {
   <hr>
   <p><strong>Configuration:</strong></p>
   <ul>
-    <li>Host: ${process.env.EMAIL_HOST}</li>
-    <li>Port: ${process.env.EMAIL_PORT}</li>
-    <li>Secure: ${process.env.EMAIL_PORT === "465" ? "Yes" : "No"}</li>
-    <li>From: ${process.env.EMAIL_USER}</li>
-    <li>To: ${process.env.EMAIL_TO}</li>
+    <li>Host: ${host}</li>
+    <li>Port: ${port}</li>
+    <li>Secure: ${port === "465" ? "Yes" : "No"}</li>
+    <li>From: ${user}</li>
+    <li>To: ${to}</li>
   </ul>
 </div>
         `,
@@ -77,7 +132,13 @@ export async function GET(request: Request) {
         success: true,
         message: "Test email sent successfully",
         messageId: info.messageId,
-        config,
+        config: {
+          host,
+          port,
+          secure: port === "465",
+          from: user,
+          to,
+        },
       })
     } catch (error) {
       console.error("SMTP test failed:", error)
@@ -87,7 +148,13 @@ export async function GET(request: Request) {
           message: "SMTP test failed",
           error: (error as Error).message,
           stack: (error as Error).stack,
-          config,
+          config: {
+            host,
+            port,
+            secure: port === "465",
+            from: user,
+            to,
+          },
         },
         { status: 500 },
       )
