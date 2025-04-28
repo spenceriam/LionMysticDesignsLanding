@@ -18,10 +18,16 @@ export function ContactForm() {
     email: "",
     message: "",
   })
+  const [charCount, setCharCount] = useState(0)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
+
+    // Update character count for message field
+    if (name === "message") {
+      setCharCount(value.length)
+    }
 
     // Reset submitted state if user starts typing again
     if (isSubmitted) {
@@ -62,6 +68,7 @@ export function ContactForm() {
 
       // Reset form
       setFormData({ name: "", email: "", message: "" })
+      setCharCount(0)
     } catch (error) {
       console.error("Form submission error:", error)
 
@@ -90,7 +97,7 @@ export function ContactForm() {
             value={formData.name}
             onChange={handleChange}
             required
-            className="bg-black/20 border-blue-700/20 focus:border-blue-500/50 h-12"
+            className="bg-black/40 border-white/20 focus:border-white/50 h-12"
           />
         </div>
         <div>
@@ -101,7 +108,7 @@ export function ContactForm() {
             value={formData.email}
             onChange={handleChange}
             required
-            className="bg-black/20 border-blue-700/20 focus:border-blue-500/50 h-12"
+            className="bg-black/40 border-white/20 focus:border-white/50 h-12"
           />
         </div>
         <div>
@@ -111,14 +118,17 @@ export function ContactForm() {
             value={formData.message}
             onChange={handleChange}
             required
-            className="min-h-[120px] bg-black/20 border-blue-700/20 focus:border-blue-500/50"
+            className="min-h-[120px] bg-black/40 border-white/20 focus:border-white/50"
           />
+          <div className="text-right text-xs text-gray-400 mt-1">{charCount} characters</div>
         </div>
         <Button
           type="submit"
           disabled={isSubmitting}
           className={`w-full h-12 rounded-full flex items-center justify-center gap-2 transition-colors duration-300 ${
-            isSubmitted ? "bg-green-600 hover:bg-green-700 text-white" : "bg-blue-600 hover:bg-blue-700 text-white"
+            isSubmitted
+              ? "bg-white text-black hover:bg-gray-200"
+              : "bg-white/10 hover:bg-white/20 text-white border border-white/30"
           }`}
         >
           {isSubmitting ? (
