@@ -102,7 +102,7 @@ export async function POST(request: Request) {
       from: `"Lion Mystic" <${user}>`,
       to: to,
       replyTo: email, // This allows you to reply directly to the person who submitted the form
-      subject: `New Contact Form Message from ${name}`,
+      subject: `New message from ${name} via Lion Mystic website`,
       text: `
 Name: ${name}
 Email: ${email}
@@ -112,7 +112,7 @@ ${message}
       `,
       html: `
 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-  <h2 style="color: #000000;">New Contact Form Submission</h2>
+  <h2 style="color: #000000;">New message from the Lion Mystic contact page</h2>
   <p><strong>From:</strong> ${name}</p>
   <p><strong>Email:</strong> ${email}</p>
   <div style="margin-top: 20px; border-left: 4px solid #000000; padding-left: 15px;">
