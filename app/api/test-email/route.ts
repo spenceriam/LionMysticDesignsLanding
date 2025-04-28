@@ -3,8 +3,17 @@ import nodemailer from "nodemailer"
 
 export async function GET(request: Request) {
   try {
+    // Log all environment variables (except password)
+    console.log("Email Environment Variables:", {
+      host: process.env.EMAIL_HOST || "not set",
+      port: process.env.EMAIL_PORT || "not set",
+      user: process.env.EMAIL_USER || "not set",
+      to: process.env.EMAIL_TO || "not set",
+      hasPassword: process.env.EMAIL_PASS ? "yes" : "no",
+    })
+
     // Create a transporter with SMTP settings
-    const transporter = nodemailer.createTransport({
+    const transporterConfig = {
       host: process.env.EMAIL_HOST,
       port: Number.parseInt(process.env.EMAIL_PORT || "587"),
       secure: process.env.EMAIL_PORT === "465", // true for 465, false for other ports
@@ -12,7 +21,14 @@ export async function GET(request: Request) {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
+    }
+
+    console.log("Creating transporter with config:", {
+      ...transporterConfig,
+      auth: { user: transporterConfig.auth.user, pass: "********" }, // Hide password in logs
     })
+
+    const transporter = nodemailer.createTransport(transporterConfig)
 
     // Log configuration (without exposing sensitive data)
     const config = {
@@ -27,10 +43,12 @@ export async function GET(request: Request) {
 
     try {
       // Verify connection
+      console.log("Verifying SMTP connection...")
       await transporter.verify()
       console.log("SMTP connection verified successfully")
 
       // Send test email
+      console.log("Sending test email...")
       const info = await transporter.sendMail({
         from: `"Lion Mystic Test" <${process.env.EMAIL_USER}>`,
         to: process.env.EMAIL_TO,
@@ -54,6 +72,7 @@ export async function GET(request: Request) {
         `,
       })
 
+      console.log("Email sent successfully:", info.messageId)
       return NextResponse.json({
         success: true,
         message: "Test email sent successfully",
@@ -67,6 +86,7 @@ export async function GET(request: Request) {
           success: false,
           message: "SMTP test failed",
           error: (error as Error).message,
+          stack: (error as Error).stack,
           config,
         },
         { status: 500 },
@@ -79,6 +99,7 @@ export async function GET(request: Request) {
         success: false,
         message: "Unexpected error",
         error: (error as Error).message,
+        stack: (error as Error).stack,
       },
       { status: 500 },
     )
