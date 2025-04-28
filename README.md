@@ -1,8 +1,10 @@
-# Lion Mystic - Coming Soon Landing Page
+# Lion Mystic - Landing Page
 
 A modern, responsive landing page for Lion Mystic, a company specializing in mid-century inspired home decor and 3D printing.
 
 ![Lion Mystic Designs](public/images/LMLogo2025-Wht.png)
+
+You can visit this today!  http://www.lionmystic.com
 
 ## 🌟 Features
 
