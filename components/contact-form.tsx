@@ -84,10 +84,10 @@ export function ContactForm() {
 
   return (
     <div className="w-full">
-      <h2 className="text-2xl font-semibold mb-3 text-gradient">Get in Touch</h2>
+      <h2 className="text-2xl font-semibold mb-3 text-gradient">Get a Consultation</h2>
       <p className="text-gray-300 mb-6">
-        Have questions about our services or products? Need a custom design? Reach out to us using the form below, and
-        we'll get back to you as soon as possible.
+        Have a project or idea you'd like to bring to life? Need expert guidance on technology solutions? Tell us about
+        your vision, and we'll help you transform it into reality.
       </p>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -113,7 +113,7 @@ export function ContactForm() {
         </div>
         <div>
           <Textarea
-            placeholder="Your Message"
+            placeholder="Describe your project or idea"
             name="message"
             value={formData.message}
             onChange={handleChange}
