@@ -33,6 +33,6 @@ You can visit this today!  http://www.lionmystic.com
 ### Installation
 
 1. Clone the repository:
-   ```bash
+   \`\`\`bash
    git clone https://github.com/your-username/lion-mystic-landing.git
    cd lion-mystic-landing

@@ -1,149 +1,177 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { useToast } from "@/hooks/use-toast"
-import { Send, ThumbsUp } from "lucide-react"
+import { Label } from "@/components/ui/label"
+import { Icons } from "@/components/icons"
 
 export function ContactForm() {
-  const { toast } = useToast()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: "",
-  })
-  const [charCount, setCharCount] = useState(0)
+  const [error, setError] = useState<string | null>(null)
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-
-    // Update character count for message field
-    if (name === "message") {
-      setCharCount(value.length)
-    }
-
-    // Reset submitted state if user starts typing again
-    if (isSubmitted) {
-      setIsSubmitted(false)
-    }
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setError(null)
+
+    const formData = new FormData(e.currentTarget)
+    const data = {
+      name: formData.get("name") as string,
+      email: formData.get("email") as string,
+      subject: formData.get("subject") as string,
+      message: formData.get("message") as string,
+    }
 
     try {
-      console.log("Submitting form data:", formData)
-
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(data),
       })
-
-      console.log("Response status:", response.status)
-      const data = await response.json()
-      console.log("Response data:", data)
 
       if (!response.ok) {
-        throw new Error(data.message || "Something went wrong")
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to send message")
       }
 
-      toast({
-        title: "Message sent!",
-        description: "We'll get back to you as soon as possible.",
-      })
-
-      // Set submitted state to true
       setIsSubmitted(true)
-
       // Reset form
-      setFormData({ name: "", email: "", message: "" })
-      setCharCount(0)
-    } catch (error) {
-      console.error("Form submission error:", error)
-
-      toast({
-        title: "Something went wrong.",
-        description: (error as Error).message || "Your message couldn't be sent. Please try again.",
-        variant: "destructive",
-      })
+      e.currentTarget.reset()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred")
     } finally {
       setIsSubmitting(false)
     }
   }
 
+  if (isSubmitted) {
+    return (
+      <div className="text-center space-y-4">
+        <div className="flex justify-center">
+          <Icons.CheckCircle size={64} className="text-green-400" />
+        </div>
+        <h3 className="text-2xl font-semibold text-white">Message Sent!</h3>
+        <p className="text-gray-300">
+          Thank you for reaching out! We've received your message and will get back to you soon at the email address you
+          provided.
+        </p>
+        <div className="text-sm text-gray-400 bg-black/30 p-4 rounded-lg">
+          <p className="mb-2">For immediate assistance, you can also reach out directly:</p>
+          <p>Email: hello@lionmystic.com</p>
+          <p>Or connect with Spencer on social media</p>
+        </div>
+        <Button
+          variant="outline"
+          className="border-white/50 text-white hover:bg-white/10 bg-transparent"
+          onClick={() => {
+            setIsSubmitted(false)
+            setError(null)
+          }}
+        >
+          Send Another Message
+        </Button>
+      </div>
+    )
+  }
+
   return (
-    <div className="w-full">
-      <h2 className="text-2xl font-semibold mb-3 text-gradient">Get a Consultation</h2>
-      <p className="text-gray-300 mb-6">
-        Have a project or idea you'd like to bring to life? Need expert guidance on technology solutions? Tell us about
-        your vision, and we'll help you transform it into reality.
-      </p>
+    <div className="space-y-6">
+      <div className="text-center">
+        <h3 className="text-2xl font-semibold mb-2 text-white">Get in Touch</h3>
+        <p className="text-gray-300">Ready to bring your ideas to life? Let's discuss your project.</p>
+      </div>
+
+      {error && (
+        <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
+          <p className="text-red-400 text-sm">{error}</p>
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
+        <div className="space-y-2">
+          <Label htmlFor="name" className="text-white">
+            Name *
+          </Label>
           <Input
-            placeholder="Your Name"
+            id="name"
             name="name"
-            value={formData.name}
-            onChange={handleChange}
+            type="text"
             required
-            className="bg-black/40 border-white/20 focus:border-white/50 h-12"
+            className="bg-black/50 border-white/20 text-white placeholder:text-gray-400 focus:border-white/40"
+            placeholder="Your name"
           />
         </div>
-        <div>
+
+        <div className="space-y-2">
+          <Label htmlFor="email" className="text-white">
+            Email *
+          </Label>
           <Input
-            type="email"
-            placeholder="Your Email"
+            id="email"
             name="email"
-            value={formData.email}
-            onChange={handleChange}
+            type="email"
             required
-            className="bg-black/40 border-white/20 focus:border-white/50 h-12"
+            className="bg-black/50 border-white/20 text-white placeholder:text-gray-400 focus:border-white/40"
+            placeholder="your@email.com"
           />
         </div>
-        <div>
+
+        <div className="space-y-2">
+          <Label htmlFor="subject" className="text-white">
+            Subject *
+          </Label>
+          <Input
+            id="subject"
+            name="subject"
+            type="text"
+            required
+            className="bg-black/50 border-white/20 text-white placeholder:text-gray-400 focus:border-white/40"
+            placeholder="Project inquiry"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="message" className="text-white">
+            Message *
+          </Label>
           <Textarea
-            placeholder="Describe your project or idea"
+            id="message"
             name="message"
-            value={formData.message}
-            onChange={handleChange}
             required
-            className="min-h-[120px] bg-black/40 border-white/20 focus:border-white/50"
+            rows={4}
+            className="bg-black/50 border-white/20 text-white placeholder:text-gray-400 focus:border-white/40 resize-none"
+            placeholder="Tell us about your project..."
           />
-          <div className="text-right text-xs text-gray-400 mt-1">{charCount} characters</div>
         </div>
+
         <Button
           type="submit"
           disabled={isSubmitting}
-          className={`w-full h-12 rounded-full flex items-center justify-center gap-2 transition-colors duration-300 ${
-            isSubmitted
-              ? "bg-white text-black hover:bg-gray-200"
-              : "bg-white/10 hover:bg-white/20 text-white border border-white/30"
-          }`}
+          className="w-full bg-white text-black hover:bg-gray-200 flex items-center gap-2"
         >
           {isSubmitting ? (
-            "Sending..."
-          ) : isSubmitted ? (
             <>
-              Sent <ThumbsUp className="h-4 w-4" />
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black"></div>
+              Sending...
             </>
           ) : (
             <>
-              Send Message <Send className="h-4 w-4" />
+              <Icons.Send size={16} />
+              Send Message
             </>
           )}
         </Button>
       </form>
+
+      <div className="text-xs text-gray-400 text-center">
+        <p>We'll respond to you as soon as possible!</p>
+      </div>
     </div>
   )
 }

@@ -1,9 +1,21 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { ArrowLeft, Home, User } from "lucide-react"
-import Image from "next/image"
+"use client"
 
-export default function PortfolioPage() {
+import { useEffect } from "react"
+import { Button } from "@/components/ui/button"
+import { Icons } from "@/components/icons"
+import Image from "next/image"
+import Link from "next/link"
+
+export default function Portfolio() {
+  useEffect(() => {
+    // Redirect to spencer.build after a short delay
+    const timer = setTimeout(() => {
+      window.location.href = "https://www.spencer.build"
+    }, 3000)
+
+    return () => clearTimeout(timer)
+  }, [])
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Navigation - Always Black */}
@@ -16,101 +28,51 @@ export default function PortfolioPage() {
         <div className="flex items-center gap-4">
           <Button variant="ghost" className="text-white hover:bg-white/10" asChild>
             <Link href="/">
-              <Home className="h-5 w-5 mr-2" />
+              <Icons.Home size={20} className="mr-2" />
               Home
             </Link>
           </Button>
           <Button variant="ghost" className="text-white hover:bg-white/10" asChild>
             <Link href="/about">
-              <User className="h-5 w-5 mr-2" />
+              <Icons.User size={20} className="mr-2" />
               About
             </Link>
           </Button>
         </div>
       </header>
 
-      <main className="flex-1 flex flex-col py-12 px-6 pb-[72px]">
-        <div className="max-w-5xl mx-auto w-full">
-          <Link href="/" className="inline-flex items-center text-white hover:text-gray-300 mb-8">
-            <ArrowLeft className="mr-2 h-4 w-4" /> Back to Home
-          </Link>
+      {/* Main content with padding at bottom to account for fixed footer */}
+      <main className="flex-1 flex flex-col pb-[72px] items-center justify-center">
+        {/* Back button */}
+        <div className="absolute top-20 left-6">
+          <Button variant="ghost" className="text-white hover:bg-white/10" asChild>
+            <Link href="/">
+              <Icons.ArrowLeft size={20} className="mr-2" />
+              Back to Home
+            </Link>
+          </Button>
+        </div>
 
-          <div className="glass-effect p-8">
-            <h1 className="text-3xl font-bold mb-6 text-gradient">Our Portfolio</h1>
-
-            <p className="text-gray-200 mb-8">
-              Below are examples of our work, showcasing how we transform ideas into reality using AI-powered design, 3D
-              modeling, and 3D printing technologies.
-            </p>
-
-            {/* Placeholder for portfolio grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Project 1 */}
-              <div className="bg-black/40 rounded-lg overflow-hidden border border-white/10 hover:border-white/30 transition-all">
-                <div className="aspect-video bg-white/5 flex items-center justify-center">
-                  <p className="text-gray-400 italic text-sm p-4 text-center">[Placeholder for project image]</p>
-                </div>
-                <div className="p-4">
-                  <h3 className="text-lg font-medium text-white mb-2">Project Title</h3>
-                  <p className="text-gray-400 text-sm italic">[Project description placeholder]</p>
-                </div>
-              </div>
-
-              {/* Project 2 */}
-              <div className="bg-black/40 rounded-lg overflow-hidden border border-white/10 hover:border-white/30 transition-all">
-                <div className="aspect-video bg-white/5 flex items-center justify-center">
-                  <p className="text-gray-400 italic text-sm p-4 text-center">[Placeholder for project image]</p>
-                </div>
-                <div className="p-4">
-                  <h3 className="text-lg font-medium text-white mb-2">Project Title</h3>
-                  <p className="text-gray-400 text-sm italic">[Project description placeholder]</p>
-                </div>
-              </div>
-
-              {/* Project 3 */}
-              <div className="bg-black/40 rounded-lg overflow-hidden border border-white/10 hover:border-white/30 transition-all">
-                <div className="aspect-video bg-white/5 flex items-center justify-center">
-                  <p className="text-gray-400 italic text-sm p-4 text-center">[Placeholder for project image]</p>
-                </div>
-                <div className="p-4">
-                  <h3 className="text-lg font-medium text-white mb-2">Project Title</h3>
-                  <p className="text-gray-400 text-sm italic">[Project description placeholder]</p>
-                </div>
-              </div>
-
-              {/* Project 4 */}
-              <div className="bg-black/40 rounded-lg overflow-hidden border border-white/10 hover:border-white/30 transition-all">
-                <div className="aspect-video bg-white/5 flex items-center justify-center">
-                  <p className="text-gray-400 italic text-sm p-4 text-center">[Placeholder for project image]</p>
-                </div>
-                <div className="p-4">
-                  <h3 className="text-lg font-medium text-white mb-2">Project Title</h3>
-                  <p className="text-gray-400 text-sm italic">[Project description placeholder]</p>
-                </div>
-              </div>
-
-              {/* Project 5 */}
-              <div className="bg-black/40 rounded-lg overflow-hidden border border-white/10 hover:border-white/30 transition-all">
-                <div className="aspect-video bg-white/5 flex items-center justify-center">
-                  <p className="text-gray-400 italic text-sm p-4 text-center">[Placeholder for project image]</p>
-                </div>
-                <div className="p-4">
-                  <h3 className="text-lg font-medium text-white mb-2">Project Title</h3>
-                  <p className="text-gray-400 text-sm italic">[Project description placeholder]</p>
-                </div>
-              </div>
-
-              {/* Project 6 */}
-              <div className="bg-black/40 rounded-lg overflow-hidden border border-white/10 hover:border-white/30 transition-all">
-                <div className="aspect-video bg-white/5 flex items-center justify-center">
-                  <p className="text-gray-400 italic text-sm p-4 text-center">[Placeholder for project image]</p>
-                </div>
-                <div className="p-4">
-                  <h3 className="text-lg font-medium text-white mb-2">Project Title</h3>
-                  <p className="text-gray-400 text-sm italic">[Project description placeholder]</p>
-                </div>
-              </div>
-            </div>
+        {/* Redirect Message */}
+        <div className="text-center space-y-6 max-w-md mx-auto px-6">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-white mx-auto"></div>
+          <h1 className="text-3xl font-bold text-white">Redirecting to Portfolio</h1>
+          <p className="text-gray-300 text-lg">
+            You're being redirected to Spencer's portfolio at{" "}
+            <a href="https://www.spencer.build" className="text-blue-400 hover:text-blue-300 underline">
+              spencer.build
+            </a>
+          </p>
+          <div className="space-y-4">
+            <Button variant="outline" className="border-white/50 text-white hover:bg-white/10 bg-transparent" asChild>
+              <a href="https://www.spencer.build" target="_blank" rel="noopener noreferrer">
+                <Icons.User size={20} className="mr-2" />
+                Visit Portfolio Now
+              </a>
+            </Button>
+            <Button variant="ghost" className="text-white hover:bg-white/10" asChild>
+              <Link href="/">Cancel & Go Home</Link>
+            </Button>
           </div>
         </div>
       </main>
@@ -127,7 +89,7 @@ export default function PortfolioPage() {
             <Button
               variant="outline"
               size="sm"
-              className="h-8 text-xs border-white/30 text-white hover:bg-white/10"
+              className="h-8 text-xs border-white/30 text-white hover:bg-white/10 bg-transparent"
               asChild
             >
               <Link href="/privacy">Privacy</Link>

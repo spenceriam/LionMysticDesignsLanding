@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { ContactForm } from "@/components/contact-form"
 import { Button } from "@/components/ui/button"
-import { Mail, Lightbulb, Cpu, PrinterIcon as Printer3d, User, FolderOpen } from "lucide-react"
+import { Icons } from "@/components/icons"
 import Image from "next/image"
 import Link from "next/link"
 import { TypingHeadline } from "@/components/typing-headline"
@@ -20,6 +20,19 @@ export default function Home() {
     const contactSection = document.getElementById("contact-section")
     if (contactSection) {
       contactSection.scrollIntoView({ behavior: "smooth" })
+    }
+  }
+
+  // Function to scroll to live demos section
+  const scrollToDemos = () => {
+    const demosSection = document.getElementById("demos-section")
+    if (demosSection) {
+      const headerHeight = 80 // Account for fixed header height
+      const elementPosition = demosSection.offsetTop - headerHeight
+      window.scrollTo({
+        top: elementPosition,
+        behavior: "smooth",
+      })
     }
   }
 
@@ -45,18 +58,20 @@ export default function Home() {
         </div>
         <div className="flex items-center gap-4">
           <Button variant="ghost" className="text-white hover:bg-white/10 hidden md:flex" asChild>
-            <Link href="/about">
-              <User className="h-5 w-5 mr-2" />
-              About
+            <Link href="https://www.spencer.build" target="_blank" rel="noopener noreferrer">
+              <Icons.User size={20} className="mr-2" />
+              About Spencer
             </Link>
           </Button>
-          <Button variant="ghost" className="text-white hover:bg-white/10 hidden md:flex" asChild>
-            <Link href="/portfolio">
-              <FolderOpen className="h-5 w-5 mr-2" />
-              Portfolio
-            </Link>
+          <Button variant="ghost" className="text-white hover:bg-white/10 hidden md:flex" onClick={scrollToDemos}>
+            <Icons.Lightbulb size={20} className="mr-2" />
+            Demos
           </Button>
-          <Button variant="outline" className="border-white/50 text-white hover:bg-white/10" onClick={scrollToContact}>
+          <Button
+            variant="outline"
+            className="border-white/50 text-white hover:bg-white/10 bg-transparent"
+            onClick={scrollToContact}
+          >
             Contact Us
           </Button>
         </div>
@@ -65,14 +80,12 @@ export default function Home() {
       {/* Main content with padding at bottom to account for fixed footer */}
       <main className="flex-1 flex flex-col pb-[72px]">
         <section className="py-16 md:py-20 px-6 flex flex-col items-center justify-center text-center max-w-5xl mx-auto">
-          <div className="mb-8 relative w-64 h-64 md:w-80 md:h-80 animate-fade-in" style={{ animationDelay: "0.2s" }}>
-            {/* Updated main landing page logo */}
-            <Image src="/images/LMLogo2025-Wht.png" alt="Lion Mystic Logo" fill className="object-contain" priority />
-          </div>
+          {/* Updated main landing page logo */}
+          {/* Removed large logo section above the typing headline */}
 
           <div
             className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tighter mb-6 animate-fade-in text-gradient h-[120px] md:h-[160px] flex items-center justify-center"
-            style={{ animationDelay: "0.4s" }}
+            style={{ animationDelay: "0.2s" }}
           >
             <TypingHeadline
               statements={headlineStatements}
@@ -94,26 +107,39 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-4 animate-fade-in" style={{ animationDelay: "0.8s" }}>
             <Button
               variant="outline"
-              className="border-white/50 text-white hover:bg-white/10 px-8 py-6 text-lg rounded-full flex items-center gap-2"
+              className="border-white/50 text-white hover:bg-white/10 px-8 py-6 text-lg rounded-full flex items-center gap-2 bg-transparent"
+              onClick={scrollToDemos}
+            >
+              <Icons.Lightbulb size={20} /> Live Demos
+            </Button>
+            <Button
+              variant="outline"
+              className="border-white/50 text-white hover:bg-white/10 px-8 py-6 text-lg rounded-full flex items-center gap-2 bg-transparent"
               onClick={scrollToContact}
             >
-              <Mail className="h-5 w-5" /> Get a Consultation
+              <Icons.Mail size={20} /> Get a Consultation
             </Button>
           </div>
 
           {/* Mobile navigation buttons */}
           <div className="flex gap-4 mt-8 md:hidden animate-fade-in" style={{ animationDelay: "1s" }}>
-            <Button variant="outline" className="border-white/50 text-white hover:bg-white/10 flex-1" asChild>
-              <Link href="/about">
-                <User className="h-5 w-5 mr-2" />
-                About Us
+            <Button
+              variant="outline"
+              className="border-white/50 text-white hover:bg-white/10 flex-1 bg-transparent"
+              asChild
+            >
+              <Link href="https://www.spencer.build" target="_blank" rel="noopener noreferrer">
+                <Icons.User size={20} className="mr-2" />
+                About Spencer
               </Link>
             </Button>
-            <Button variant="outline" className="border-white/50 text-white hover:bg-white/10 flex-1" asChild>
-              <Link href="/portfolio">
-                <FolderOpen className="h-5 w-5 mr-2" />
-                Our Work
-              </Link>
+            <Button
+              variant="outline"
+              className="border-white/50 text-white hover:bg-white/10 flex-1 bg-transparent"
+              onClick={scrollToDemos}
+            >
+              <Icons.Lightbulb size={20} className="mr-2" />
+              Demos
             </Button>
           </div>
         </section>
@@ -127,7 +153,7 @@ export default function Home() {
             <div className="p-8 z-10 relative">
               {/* Centered "Coming Soon" message with updated text */}
               <div className="flex items-center justify-center mb-10">
-                <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold heading-gradient">
+                <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white">
                   Pardon the dust, we're working on great things coming soon
                 </h2>
               </div>
@@ -157,7 +183,7 @@ export default function Home() {
               {/* AI-Powered Prototyping */}
               <div className="bg-black/40 p-6 rounded-lg border border-white/20 hover:border-white/40 transition-all flex flex-col items-center text-center">
                 <div className="bg-white/10 p-4 rounded-full mb-4">
-                  <Cpu className="h-8 w-8 text-white" />
+                  <Icons.Cpu size={32} className="text-white" />
                 </div>
                 <h4 className="text-xl font-medium mb-2 text-white">AI-Powered Prototyping</h4>
                 <p className="text-gray-300">
@@ -168,7 +194,7 @@ export default function Home() {
               {/* 3D Design/CAD */}
               <div className="bg-black/40 p-6 rounded-lg border border-white/20 hover:border-white/40 transition-all flex flex-col items-center text-center">
                 <div className="bg-white/10 p-4 rounded-full mb-4">
-                  <Lightbulb className="h-8 w-8 text-white" />
+                  <Icons.Lightbulb size={32} className="text-white" />
                 </div>
                 <h4 className="text-xl font-medium mb-2 text-white">3D Design & Modeling</h4>
                 <p className="text-gray-300">
@@ -179,12 +205,119 @@ export default function Home() {
               {/* 3D Printing & Fabrication */}
               <div className="bg-black/40 p-6 rounded-lg border border-white/20 hover:border-white/40 transition-all flex flex-col items-center text-center">
                 <div className="bg-white/10 p-4 rounded-full mb-4">
-                  <Printer3d className="h-8 w-8 text-white" />
+                  <Icons.Printer size={32} className="text-white" />
                 </div>
                 <h4 className="text-xl font-medium mb-2 text-white">3D Printing & Fabrication</h4>
                 <p className="text-gray-300">
                   Bringing digital designs to life with advanced 3D printing technologies and production techniques.
                 </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Live Demos Section */}
+        <section id="demos-section" className="py-8 px-6 animate-fade-in" style={{ animationDelay: "1.15s" }}>
+          <div className="max-w-6xl mx-auto">
+            <h3 className="text-2xl font-semibold mb-8 text-center text-gradient">Live Demos</h3>
+            <p className="text-center text-gray-300 mb-12 max-w-3xl mx-auto">
+              Explore our latest projects and see our technology in action. These hackathon-inspired functional projects
+              showcase our expertise in AI-powered development and our ability to rapidly build MVPs and innovative
+              solutions using cutting-edge AI capabilities.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {/* OpenPRD */}
+              <div className="bg-black/40 p-6 rounded-lg border border-white/20 hover:border-white/40 transition-all group">
+                <div className="aspect-video bg-gray-800 rounded-lg mb-4 overflow-hidden">
+                  <Image
+                    src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-DAhGyXKOCQ6XyuSUXD9fxZj0vUHr4y.png"
+                    alt="OpenPRD Application Screenshot"
+                    width={300}
+                    height={200}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+                <h4 className="text-xl font-semibold mb-3 text-white">OpenPRD</h4>
+                <p className="text-gray-300 mb-4 leading-relaxed">
+                  AI-powered Product Requirements Document generator that creates comprehensive PRDs using your provided
+                  API keys and project specifications.
+                </p>
+                <Button
+                  variant="outline"
+                  className="w-full border-white/30 text-white hover:bg-white/10 bg-transparent"
+                  asChild
+                >
+                  <Link
+                    href="https://staging-openprd-app-ee92.frontend.encr.app/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    View Live Demo
+                  </Link>
+                </Button>
+              </div>
+
+              {/* MockEm */}
+              <div className="bg-black/40 p-6 rounded-lg border border-white/20 hover:border-white/40 transition-all group">
+                <div className="aspect-video bg-gray-800 rounded-lg mb-4 overflow-hidden">
+                  <Image
+                    src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-bexrPFIgw7MZKpyLUr3riFOcdFsVNc.png"
+                    alt="MockEm Application Screenshot"
+                    width={300}
+                    height={200}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+                <h4 className="text-xl font-semibold mb-3 text-white">MockEm</h4>
+                <p className="text-gray-300 mb-4 leading-relaxed">
+                  Enterprise-friendly mock data generator that creates realistic test data for development and testing
+                  environments with customizable schemas.
+                </p>
+                <Button
+                  variant="outline"
+                  className="w-full border-white/30 text-white hover:bg-white/10 bg-transparent"
+                  asChild
+                >
+                  <Link
+                    href="https://staging-mockem-data-generator-qxb2.frontend.encr.app/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    View Live Demo
+                  </Link>
+                </Button>
+              </div>
+
+              {/* Validart */}
+              <div className="bg-black/40 p-6 rounded-lg border border-white/20 hover:border-white/40 transition-all group">
+                <div className="aspect-video bg-gray-800 rounded-lg mb-4 overflow-hidden">
+                  <Image
+                    src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-d0GAtuwTo7uBRNSt0ZoCaLTjvifNat.png"
+                    alt="Validart Application Screenshot"
+                    width={300}
+                    height={200}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+                <h4 className="text-xl font-semibold mb-3 text-white">Validart</h4>
+                <p className="text-gray-300 mb-4 leading-relaxed">
+                  Event card art validator that ensures your event graphics meet platform requirements and design
+                  standards for optimal presentation.
+                </p>
+                <Button
+                  variant="outline"
+                  className="w-full border-white/30 text-white hover:bg-white/10 bg-transparent"
+                  asChild
+                >
+                  <Link
+                    href="https://staging-validart-tool-gbmi.frontend.encr.app/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    View Live Demo
+                  </Link>
+                </Button>
               </div>
             </div>
           </div>
@@ -208,23 +341,27 @@ export default function Home() {
           </div>
           <div className="flex gap-2">
             <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 text-xs text-white hover:bg-white/10 flex items-center gap-1"
+              asChild
+            >
+              <Link href="https://x.com/spencer_i_am" target="_blank" rel="noopener noreferrer">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                </svg>
+                @spencer_i_am
+              </Link>
+            </Button>
+
+            <Button
               variant="outline"
               size="sm"
-              className="h-8 text-xs border-white/30 text-white hover:bg-white/10"
+              className="h-8 text-xs border-white/30 text-white hover:bg-white/10 bg-transparent"
               asChild
             >
               <Link href="/privacy">Privacy</Link>
             </Button>
-            {/* Terms button hidden for now
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-8 text-xs border-white/30 text-white hover:bg-white/10"
-              asChild
-            >
-              <Link href="/terms">Terms</Link>
-            </Button>
-            */}
           </div>
         </div>
       </footer>
