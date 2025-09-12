@@ -1,7 +1,10 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
+import { Analytics } from "@/components/analytics"
+import Script from "next/script"
 import "./globals.css"
+import { Suspense } from "react"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -94,6 +97,17 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <head>
+        {/* Google Analytics */}
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-VLHC2XZ6PC" strategy="afterInteractive" async />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-VLHC2XZ6PC');
+          `}
+        </Script>
+
         {/* Enhanced gradient background with inline style */}
         <style
           dangerouslySetInnerHTML={{
@@ -175,7 +189,12 @@ export default function RootLayout({
         <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       </head>
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <Suspense fallback={null}>
+          {children}
+          <Analytics />
+        </Suspense>
+      </body>
     </html>
   )
 }

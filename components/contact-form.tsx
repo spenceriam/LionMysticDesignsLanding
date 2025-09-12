@@ -7,15 +7,18 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Icons } from "@/components/icons"
+import { trackContactFormSubmit, trackSocialClick } from "@/components/analytics"
 
 export function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [message, setMessage] = useState("")
+  const [error, setError] = useState("")
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setError("")
 
     const formData = new FormData(e.currentTarget)
     const data = {
@@ -26,6 +29,8 @@ export function ContactForm() {
     }
 
     try {
+      console.log("Submitting contact form...")
+
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: {
@@ -35,24 +40,25 @@ export function ContactForm() {
       })
 
       const result = await response.json()
+      console.log("API Response:", result)
+
+      if (!response.ok) {
+        throw new Error(result.error || `HTTP ${response.status}`)
+      }
+
+      // Track successful form submission
+      trackContactFormSubmit()
 
       setMessage(result.message || "Message sent successfully!")
       setIsSubmitted(true)
       e.currentTarget.reset()
     } catch (error) {
       console.error("Contact form error:", error)
-      setMessage("Message received! We'll get back to you soon.")
-      setIsSubmitted(true)
-      e.currentTarget.reset()
+      setError(error instanceof Error ? error.message : "Failed to send message")
+      setMessage("There was an error sending your message. Please try again or contact us directly.")
     } finally {
       setIsSubmitting(false)
     }
-  }
-
-  const handleDirectEmail = () => {
-    const subject = encodeURIComponent("Lion Mystic Inquiry")
-    const body = encodeURIComponent("Hi! I'm interested in learning more about Lion Mystic's services.")
-    window.open(`mailto:contact@lionmystic.com?subject=${subject}&body=${body}`, "_blank")
   }
 
   if (isSubmitted) {
@@ -64,6 +70,13 @@ export function ContactForm() {
         <h3 className="text-2xl font-semibold text-white">Thank You!</h3>
         <p className="text-gray-300">{message}</p>
 
+        {error && (
+          <div className="text-sm text-red-400 bg-red-900/20 p-3 rounded-lg">
+            <p className="font-semibold">Error Details:</p>
+            <p>{error}</p>
+          </div>
+        )}
+
         <div className="text-sm text-gray-400 bg-black/30 p-4 rounded-lg space-y-3">
           <p className="font-semibold text-white">For immediate assistance:</p>
           <div className="space-y-2">
@@ -71,6 +84,7 @@ export function ContactForm() {
               variant="outline"
               size="sm"
               className="w-full border-white/30 text-white hover:bg-white/10 bg-transparent"
+              onClick={() => trackSocialClick("twitter")}
               asChild
             >
               <a href="https://x.com/spencer_i_am" target="_blank" rel="noopener noreferrer">
@@ -89,6 +103,7 @@ export function ContactForm() {
           onClick={() => {
             setIsSubmitted(false)
             setMessage("")
+            setError("")
           }}
         >
           Send Another Message
@@ -103,6 +118,13 @@ export function ContactForm() {
         <h3 className="text-2xl font-semibold mb-2 text-white">Get in Touch</h3>
         <p className="text-gray-300">Ready to bring your ideas to life? Let's discuss your project.</p>
       </div>
+
+      {error && (
+        <div className="text-sm text-red-400 bg-red-900/20 p-3 rounded-lg">
+          <p className="font-semibold">Error:</p>
+          <p>{error}</p>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
@@ -187,6 +209,7 @@ export function ContactForm() {
             variant="ghost"
             size="sm"
             className="text-gray-400 hover:text-white hover:bg-white/10 h-auto py-1"
+            onClick={() => trackSocialClick("twitter")}
             asChild
           >
             <a href="https://x.com/spencer_i_am" target="_blank" rel="noopener noreferrer">

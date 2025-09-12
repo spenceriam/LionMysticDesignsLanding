@@ -7,6 +7,7 @@ import { Icons } from "@/components/icons"
 import Image from "next/image"
 import Link from "next/link"
 import { TypingHeadline } from "@/components/typing-headline"
+import { trackDemoClick, trackSocialClick, trackScrollToSection } from "@/components/analytics"
 
 export default function Home() {
   const [mounted, setMounted] = useState(false)
@@ -20,6 +21,7 @@ export default function Home() {
     const contactSection = document.getElementById("contact-section")
     if (contactSection) {
       contactSection.scrollIntoView({ behavior: "smooth" })
+      trackScrollToSection("contact")
     }
   }
 
@@ -33,7 +35,20 @@ export default function Home() {
         top: elementPosition,
         behavior: "smooth",
       })
+      trackScrollToSection("demos")
     }
+  }
+
+  // Handle demo clicks with tracking
+  const handleDemoClick = (demoName: string, url: string) => {
+    trackDemoClick(demoName)
+    window.open(url, "_blank", "noopener,noreferrer")
+  }
+
+  // Handle social clicks with tracking
+  const handleSocialClick = (platform: string, url: string) => {
+    trackSocialClick(platform)
+    window.open(url, "_blank", "noopener,noreferrer")
   }
 
   // Provocative statements for the rotating headline
@@ -63,7 +78,12 @@ export default function Home() {
         </div>
         <nav className="flex items-center gap-4" role="navigation" aria-label="Main navigation">
           <Button variant="ghost" className="text-white hover:bg-white/10 hidden md:flex" asChild>
-            <Link href="https://www.spencer.build" target="_blank" rel="noopener noreferrer">
+            <Link
+              href="https://www.spencer.build"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackSocialClick("spencer_portfolio")}
+            >
               <Icons.User size={20} className="mr-2" />
               About Spencer
             </Link>
@@ -129,6 +149,7 @@ export default function Home() {
             <Button
               variant="outline"
               className="border-white/50 text-white hover:bg-white/10 flex-1 bg-transparent"
+              onClick={() => handleSocialClick("spencer_portfolio", "https://www.spencer.build")}
               asChild
             >
               <Link href="https://www.spencer.build" target="_blank" rel="noopener noreferrer">
@@ -262,15 +283,9 @@ export default function Home() {
                 <Button
                   variant="outline"
                   className="w-full border-white/30 text-white hover:bg-white/10 bg-transparent"
-                  asChild
+                  onClick={() => handleDemoClick("OpenPRD", "https://staging-openprd-app-ee92.frontend.encr.app/")}
                 >
-                  <Link
-                    href="https://staging-openprd-app-ee92.frontend.encr.app/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    View Live Demo
-                  </Link>
+                  View Live Demo
                 </Button>
               </article>
 
@@ -293,15 +308,11 @@ export default function Home() {
                 <Button
                   variant="outline"
                   className="w-full border-white/30 text-white hover:bg-white/10 bg-transparent"
-                  asChild
+                  onClick={() =>
+                    handleDemoClick("MockEm", "https://staging-mockem-data-generator-qxb2.frontend.encr.app/")
+                  }
                 >
-                  <Link
-                    href="https://staging-mockem-data-generator-qxb2.frontend.encr.app/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    View Live Demo
-                  </Link>
+                  View Live Demo
                 </Button>
               </article>
 
@@ -324,15 +335,9 @@ export default function Home() {
                 <Button
                   variant="outline"
                   className="w-full border-white/30 text-white hover:bg-white/10 bg-transparent"
-                  asChild
+                  onClick={() => handleDemoClick("Validart", "https://staging-validart-tool-gbmi.frontend.encr.app/")}
                 >
-                  <Link
-                    href="https://staging-validart-tool-gbmi.frontend.encr.app/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    View Live Demo
-                  </Link>
+                  View Live Demo
                 </Button>
               </article>
             </div>
@@ -365,6 +370,7 @@ export default function Home() {
               variant="ghost"
               size="sm"
               className="h-8 text-xs text-white hover:bg-white/10 flex items-center gap-1"
+              onClick={() => handleSocialClick("twitter", "https://x.com/spencer_i_am")}
               asChild
             >
               <Link href="https://x.com/spencer_i_am" target="_blank" rel="noopener noreferrer">
