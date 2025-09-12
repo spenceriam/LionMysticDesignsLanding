@@ -10,24 +10,27 @@ export const size = {
 }
 export const contentType = "image/png"
 
-// Image generation
+// Image generation - Lion-inspired design for Apple devices
 export default function Icon() {
   return new ImageResponse(
     // ImageResponse JSX element
     <div
       style={{
-        fontSize: 72,
-        background: "black",
+        fontSize: 80,
+        background: "linear-gradient(135deg, #1a1a1a 0%, #000000 100%)",
         width: "100%",
         height: "100%",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         color: "white",
-        borderRadius: "50%",
+        borderRadius: "20px",
+        border: "2px solid #333",
+        fontWeight: "bold",
+        fontFamily: "system-ui",
       }}
     >
-      LM
+      🦁
     </div>,
     // ImageResponse options
     {

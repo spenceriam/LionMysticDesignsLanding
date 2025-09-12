@@ -53,10 +53,15 @@ export default function Home() {
       <header className="w-full py-4 px-6 flex items-center justify-between bg-black z-20 sticky top-0">
         <div className="flex items-center gap-2">
           {/* Header logo */}
-          <Image src="/images/LionMystic_Logo2025_Head-Wht.png" alt="Lion Mystic Logo" width={36} height={36} />
+          <Image
+            src="/images/LionMystic_Logo2025_Head-Wht.png"
+            alt="Lion Mystic Logo - AI-Powered 3D Design Studio"
+            width={36}
+            height={36}
+          />
           <span className="font-bold text-xl text-white">Lion Mystic</span>
         </div>
-        <div className="flex items-center gap-4">
+        <nav className="flex items-center gap-4" role="navigation" aria-label="Main navigation">
           <Button variant="ghost" className="text-white hover:bg-white/10 hidden md:flex" asChild>
             <Link href="https://www.spencer.build" target="_blank" rel="noopener noreferrer">
               <Icons.User size={20} className="mr-2" />
@@ -74,16 +79,14 @@ export default function Home() {
           >
             Contact Us
           </Button>
-        </div>
+        </nav>
       </header>
 
       {/* Main content with padding at bottom to account for fixed footer */}
       <main className="flex-1 flex flex-col pb-[72px]">
+        {/* Hero Section */}
         <section className="py-16 md:py-20 px-6 flex flex-col items-center justify-center text-center max-w-5xl mx-auto">
-          {/* Updated main landing page logo */}
-          {/* Removed large logo section above the typing headline */}
-
-          <div
+          <h1
             className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tighter mb-6 animate-fade-in text-gradient h-[120px] md:h-[160px] flex items-center justify-center"
             style={{ animationDelay: "0.2s" }}
           >
@@ -93,7 +96,7 @@ export default function Home() {
               deletingSpeed={40}
               delayAfterTyping={5000}
             />
-          </div>
+          </h1>
 
           <p
             className="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto mb-10 animate-fade-in"
@@ -144,8 +147,8 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Updated About Section */}
-        <section className="py-8 px-6">
+        {/* About Section */}
+        <section className="py-8 px-6" aria-labelledby="about-heading">
           <div
             className="max-w-4xl mx-auto animate-fade-in relative rainbow-border-container"
             style={{ animationDelay: "1s" }}
@@ -153,7 +156,7 @@ export default function Home() {
             <div className="p-8 z-10 relative">
               {/* Centered "Coming Soon" message with updated text */}
               <div className="flex items-center justify-center mb-10">
-                <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white">
+                <h2 id="about-heading" className="text-2xl md:text-3xl lg:text-4xl font-bold text-white">
                   Pardon the dust, we're working on great things coming soon
                 </h2>
               </div>
@@ -174,52 +177,65 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Updated We Specialize In Section */}
-        <section className="py-8 px-6 animate-fade-in" style={{ animationDelay: "1.1s" }}>
+        {/* Services Section */}
+        <section
+          className="py-8 px-6 animate-fade-in"
+          style={{ animationDelay: "1.1s" }}
+          aria-labelledby="services-heading"
+        >
           <div className="max-w-4xl mx-auto glass-effect p-8">
-            <h3 className="text-2xl font-semibold mb-6 text-center text-gradient">We specialize in:</h3>
+            <h2 id="services-heading" className="text-2xl font-semibold mb-6 text-center text-gradient">
+              We specialize in:
+            </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* AI-Powered Prototyping */}
-              <div className="bg-black/40 p-6 rounded-lg border border-white/20 hover:border-white/40 transition-all flex flex-col items-center text-center">
-                <div className="bg-white/10 p-4 rounded-full mb-4">
+              <article className="bg-black/40 p-6 rounded-lg border border-white/20 hover:border-white/40 transition-all flex flex-col items-center text-center">
+                <div className="bg-white/10 p-4 rounded-full mb-4" aria-hidden="true">
                   <Icons.Cpu size={32} className="text-white" />
                 </div>
-                <h4 className="text-xl font-medium mb-2 text-white">AI-Powered Prototyping</h4>
+                <h3 className="text-xl font-medium mb-2 text-white">AI-Powered Prototyping</h3>
                 <p className="text-gray-300">
                   Using AI tools and coding agents to rapidly prototype concepts and visualize ideas before production.
                 </p>
-              </div>
+              </article>
 
               {/* 3D Design/CAD */}
-              <div className="bg-black/40 p-6 rounded-lg border border-white/20 hover:border-white/40 transition-all flex flex-col items-center text-center">
-                <div className="bg-white/10 p-4 rounded-full mb-4">
+              <article className="bg-black/40 p-6 rounded-lg border border-white/20 hover:border-white/40 transition-all flex flex-col items-center text-center">
+                <div className="bg-white/10 p-4 rounded-full mb-4" aria-hidden="true">
                   <Icons.Lightbulb size={32} className="text-white" />
                 </div>
-                <h4 className="text-xl font-medium mb-2 text-white">3D Design & Modeling</h4>
+                <h3 className="text-xl font-medium mb-2 text-white">3D Design & Modeling</h3>
                 <p className="text-gray-300">
                   Creating detailed digital models with Shapr3D CAD and other professional tools to perfect your vision.
                 </p>
-              </div>
+              </article>
 
               {/* 3D Printing & Fabrication */}
-              <div className="bg-black/40 p-6 rounded-lg border border-white/20 hover:border-white/40 transition-all flex flex-col items-center text-center">
-                <div className="bg-white/10 p-4 rounded-full mb-4">
+              <article className="bg-black/40 p-6 rounded-lg border border-white/20 hover:border-white/40 transition-all flex flex-col items-center text-center">
+                <div className="bg-white/10 p-4 rounded-full mb-4" aria-hidden="true">
                   <Icons.Printer size={32} className="text-white" />
                 </div>
-                <h4 className="text-xl font-medium mb-2 text-white">3D Printing & Fabrication</h4>
+                <h3 className="text-xl font-medium mb-2 text-white">3D Printing & Fabrication</h3>
                 <p className="text-gray-300">
                   Bringing digital designs to life with advanced 3D printing technologies and production techniques.
                 </p>
-              </div>
+              </article>
             </div>
           </div>
         </section>
 
         {/* Live Demos Section */}
-        <section id="demos-section" className="py-8 px-6 animate-fade-in" style={{ animationDelay: "1.15s" }}>
+        <section
+          id="demos-section"
+          className="py-8 px-6 animate-fade-in"
+          style={{ animationDelay: "1.15s" }}
+          aria-labelledby="demos-heading"
+        >
           <div className="max-w-6xl mx-auto">
-            <h3 className="text-2xl font-semibold mb-8 text-center text-gradient">Live Demos</h3>
+            <h2 id="demos-heading" className="text-2xl font-semibold mb-8 text-center text-gradient">
+              Live Demos
+            </h2>
             <p className="text-center text-gray-300 mb-12 max-w-3xl mx-auto">
               Explore our latest projects and see our technology in action. These hackathon-inspired functional projects
               showcase our expertise in AI-powered development and our ability to rapidly build MVPs and innovative
@@ -228,17 +244,17 @@ export default function Home() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {/* OpenPRD */}
-              <div className="bg-black/40 p-6 rounded-lg border border-white/20 hover:border-white/40 transition-all group">
+              <article className="bg-black/40 p-6 rounded-lg border border-white/20 hover:border-white/40 transition-all group">
                 <div className="aspect-video bg-gray-800 rounded-lg mb-4 overflow-hidden">
                   <Image
                     src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-DAhGyXKOCQ6XyuSUXD9fxZj0vUHr4y.png"
-                    alt="OpenPRD Application Screenshot"
+                    alt="OpenPRD Application Screenshot - AI-powered Product Requirements Document generator interface"
                     width={300}
                     height={200}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
-                <h4 className="text-xl font-semibold mb-3 text-white">OpenPRD</h4>
+                <h3 className="text-xl font-semibold mb-3 text-white">OpenPRD</h3>
                 <p className="text-gray-300 mb-4 leading-relaxed">
                   AI-powered Product Requirements Document generator that creates comprehensive PRDs using your provided
                   API keys and project specifications.
@@ -256,20 +272,20 @@ export default function Home() {
                     View Live Demo
                   </Link>
                 </Button>
-              </div>
+              </article>
 
               {/* MockEm */}
-              <div className="bg-black/40 p-6 rounded-lg border border-white/20 hover:border-white/40 transition-all group">
+              <article className="bg-black/40 p-6 rounded-lg border border-white/20 hover:border-white/40 transition-all group">
                 <div className="aspect-video bg-gray-800 rounded-lg mb-4 overflow-hidden">
                   <Image
                     src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-bexrPFIgw7MZKpyLUr3riFOcdFsVNc.png"
-                    alt="MockEm Application Screenshot"
+                    alt="MockEm Application Screenshot - Enterprise mock data generator interface"
                     width={300}
                     height={200}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
-                <h4 className="text-xl font-semibold mb-3 text-white">MockEm</h4>
+                <h3 className="text-xl font-semibold mb-3 text-white">MockEm</h3>
                 <p className="text-gray-300 mb-4 leading-relaxed">
                   Enterprise-friendly mock data generator that creates realistic test data for development and testing
                   environments with customizable schemas.
@@ -287,20 +303,20 @@ export default function Home() {
                     View Live Demo
                   </Link>
                 </Button>
-              </div>
+              </article>
 
               {/* Validart */}
-              <div className="bg-black/40 p-6 rounded-lg border border-white/20 hover:border-white/40 transition-all group">
+              <article className="bg-black/40 p-6 rounded-lg border border-white/20 hover:border-white/40 transition-all group">
                 <div className="aspect-video bg-gray-800 rounded-lg mb-4 overflow-hidden">
                   <Image
                     src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-d0GAtuwTo7uBRNSt0ZoCaLTjvifNat.png"
-                    alt="Validart Application Screenshot"
+                    alt="Validart Application Screenshot - Event card art validator interface"
                     width={300}
                     height={200}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
-                <h4 className="text-xl font-semibold mb-3 text-white">Validart</h4>
+                <h3 className="text-xl font-semibold mb-3 text-white">Validart</h3>
                 <p className="text-gray-300 mb-4 leading-relaxed">
                   Event card art validator that ensures your event graphics meet platform requirements and design
                   standards for optimal presentation.
@@ -318,13 +334,18 @@ export default function Home() {
                     View Live Demo
                   </Link>
                 </Button>
-              </div>
+              </article>
             </div>
           </div>
         </section>
 
         {/* Contact Form */}
-        <section id="contact-section" className="py-12 px-6 animate-fade-in" style={{ animationDelay: "1.2s" }}>
+        <section
+          id="contact-section"
+          className="py-12 px-6 animate-fade-in"
+          style={{ animationDelay: "1.2s" }}
+          aria-labelledby="contact-heading"
+        >
           <div className="max-w-md mx-auto glass-effect p-8">
             <ContactForm />
           </div>
@@ -347,7 +368,7 @@ export default function Home() {
               asChild
             >
               <Link href="https://x.com/spencer_i_am" target="_blank" rel="noopener noreferrer">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                 </svg>
                 @spencer_i_am

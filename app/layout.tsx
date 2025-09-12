@@ -6,8 +6,68 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Lion Mystic | Coming Soon",
-  description: "Mid-century inspired home decor and lighting fixtures, brought to life with 3D printing technology.",
+  title: "Lion Mystic | AI-Powered 3D Design & Prototyping Studio",
+  description:
+    "Transform your ideas into reality with Lion Mystic's AI-powered design, 3D modeling, and advanced manufacturing. Expert 3D printing services using Bambu Lab, Creality, and Flashforge technologies.",
+  keywords: [
+    "3D printing",
+    "AI-powered design",
+    "3D modeling",
+    "CAD design",
+    "prototyping",
+    "Bambu Lab",
+    "Creality",
+    "Flashforge",
+    "product development",
+    "manufacturing",
+    "Shapr3D",
+    "custom design",
+    "rapid prototyping",
+  ],
+  authors: [{ name: "Spencer", url: "https://www.spencer.build" }],
+  creator: "Lion Mystic",
+  publisher: "Lion Mystic",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://www.lionmystic.com",
+    siteName: "Lion Mystic",
+    title: "Lion Mystic | AI-Powered 3D Design & Prototyping Studio",
+    description:
+      "Transform your ideas into reality with Lion Mystic's AI-powered design, 3D modeling, and advanced manufacturing services.",
+    images: [
+      {
+        url: "/images/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Lion Mystic - AI-Powered 3D Design Studio",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@spencer_i_am",
+    creator: "@spencer_i_am",
+    title: "Lion Mystic | AI-Powered 3D Design & Prototyping Studio",
+    description: "Transform your ideas into reality with AI-powered design and advanced 3D printing technologies.",
+    images: ["/images/twitter-card.jpg"],
+  },
+  alternates: {
+    canonical: "https://www.lionmystic.com",
+  },
+  category: "Technology",
+  classification: "Business",
   icons: {
     icon: [
       { url: "/favicon.ico" },
@@ -16,7 +76,14 @@ export const metadata: Metadata = {
     ],
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
-    generator: 'v0.dev'
+  generator: "Next.js",
+  applicationName: "Lion Mystic",
+  referrer: "origin-when-cross-origin",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
 }
 
 export default function RootLayout({
@@ -45,7 +112,62 @@ export default function RootLayout({
   body::before {
     display: none !important;
   }
+  
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px;
+  }
 `,
+          }}
+        />
+        {/* Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "Lion Mystic",
+              description:
+                "AI-powered 3D design and prototyping studio specializing in advanced manufacturing and custom product development.",
+              url: "https://www.lionmystic.com",
+              logo: "https://www.lionmystic.com/images/LMLogo2025-Wht.png",
+              founder: {
+                "@type": "Person",
+                name: "Spencer",
+                url: "https://www.spencer.build",
+              },
+              sameAs: ["https://x.com/spencer_i_am"],
+              contactPoint: {
+                "@type": "ContactPoint",
+                contactType: "customer service",
+                email: "hello@lionmystic.com",
+              },
+              address: {
+                "@type": "PostalAddress",
+                addressCountry: "US",
+              },
+              service: [
+                {
+                  "@type": "Service",
+                  name: "AI-Powered Prototyping",
+                  description:
+                    "Using AI tools and coding agents to rapidly prototype concepts and visualize ideas before production.",
+                },
+                {
+                  "@type": "Service",
+                  name: "3D Design & Modeling",
+                  description: "Creating detailed digital models with Shapr3D CAD and other professional tools.",
+                },
+                {
+                  "@type": "Service",
+                  name: "3D Printing & Fabrication",
+                  description:
+                    "Advanced 3D printing using FDM and SLA technologies with Bambu Lab, Creality, and Flashforge equipment.",
+                },
+              ],
+            }),
           }}
         />
         <link rel="icon" href="/favicon.ico" sizes="any" />
