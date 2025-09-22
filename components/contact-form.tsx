@@ -54,8 +54,17 @@ export function ContactForm() {
       e.currentTarget.reset()
     } catch (error) {
       console.error("Contact form error:", error)
-      setError(error instanceof Error ? error.message : "Failed to send message")
-      setMessage("There was an error sending your message. Please try again or contact us directly.")
+      const errorMessage = error instanceof Error ? error.message : "Failed to send message"
+      setError(errorMessage)
+
+      // Show user-friendly message
+      if (errorMessage.includes("Email service")) {
+        setMessage(
+          "There's a temporary issue with our email service. Please contact us directly via Twitter/X for immediate assistance.",
+        )
+      } else {
+        setMessage("There was an error sending your message. Please try again or contact us directly.")
+      }
     } finally {
       setIsSubmitting(false)
     }
@@ -65,15 +74,29 @@ export function ContactForm() {
     return (
       <div className="text-center space-y-4">
         <div className="flex justify-center">
-          <Icons.CheckCircle size={64} className="text-green-400" />
+          {error ? (
+            <div className="w-16 h-16 rounded-full bg-yellow-500/20 flex items-center justify-center">
+              <svg className="w-8 h-8 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                />
+              </svg>
+            </div>
+          ) : (
+            <Icons.CheckCircle size={64} className="text-green-400" />
+          )}
         </div>
-        <h3 className="text-2xl font-semibold text-white">Thank You!</h3>
+
+        <h3 className="text-2xl font-semibold text-white">{error ? "Almost There!" : "Thank You!"}</h3>
         <p className="text-gray-300">{message}</p>
 
         {error && (
-          <div className="text-sm text-red-400 bg-red-900/20 p-3 rounded-lg">
-            <p className="font-semibold">Error Details:</p>
-            <p>{error}</p>
+          <div className="text-sm text-yellow-400 bg-yellow-900/20 p-3 rounded-lg">
+            <p className="font-semibold">Technical Details:</p>
+            <p className="text-xs opacity-75">{error}</p>
           </div>
         )}
 
