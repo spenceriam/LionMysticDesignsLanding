@@ -14,11 +14,13 @@ export function ContactForm() {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [message, setMessage] = useState("")
   const [error, setError] = useState("")
+  const [debugInfo, setDebugInfo] = useState<any>(null)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsSubmitting(true)
     setError("")
+    setDebugInfo(null)
 
     const formData = new FormData(e.currentTarget)
     const data = {
@@ -28,8 +30,16 @@ export function ContactForm() {
       message: formData.get("message") as string,
     }
 
+    // Basic client-side validation
+    if (!data.name || !data.email || !data.subject || !data.message) {
+      setError("All fields are required")
+      setIsSubmitting(false)
+      return
+    }
+
     try {
-      console.log("Submitting contact form...")
+      console.log("🚀 Submitting contact form...")
+      console.log("Form data:", { ...data, message: data.message.substring(0, 50) + "..." })
 
       const response = await fetch("/api/contact", {
         method: "POST",
@@ -40,9 +50,10 @@ export function ContactForm() {
       })
 
       const result = await response.json()
-      console.log("API Response:", result)
+      console.log("📨 API Response:", result)
 
       if (!response.ok) {
+        setDebugInfo(result.debug || result.env_debug)
         throw new Error(result.error || `HTTP ${response.status}`)
       }
 
@@ -52,15 +63,21 @@ export function ContactForm() {
       setMessage(result.message || "Message sent successfully!")
       setIsSubmitted(true)
       e.currentTarget.reset()
+
+      console.log("✅ Contact form submitted successfully!")
     } catch (error) {
-      console.error("Contact form error:", error)
+      console.error("❌ Contact form error:", error)
       const errorMessage = error instanceof Error ? error.message : "Failed to send message"
       setError(errorMessage)
 
-      // Show user-friendly message
+      // Show user-friendly message based on error type
       if (errorMessage.includes("Email service")) {
         setMessage(
           "There's a temporary issue with our email service. Please contact us directly via Twitter/X for immediate assistance.",
+        )
+      } else if (errorMessage.includes("Rate limit")) {
+        setMessage(
+          "We're receiving a lot of messages right now. Please wait a moment and try again, or contact us directly via Twitter/X.",
         )
       } else {
         setMessage("There was an error sending your message. Please try again or contact us directly.")
@@ -97,6 +114,12 @@ export function ContactForm() {
           <div className="text-sm text-yellow-400 bg-yellow-900/20 p-3 rounded-lg">
             <p className="font-semibold">Technical Details:</p>
             <p className="text-xs opacity-75">{error}</p>
+            {debugInfo && (
+              <details className="mt-2">
+                <summary className="cursor-pointer text-xs opacity-50">Debug Info</summary>
+                <pre className="text-xs mt-1 opacity-50 overflow-auto">{JSON.stringify(debugInfo, null, 2)}</pre>
+              </details>
+            )}
           </div>
         )}
 
@@ -127,6 +150,7 @@ export function ContactForm() {
             setIsSubmitted(false)
             setMessage("")
             setError("")
+            setDebugInfo(null)
           }}
         >
           Send Another Message
@@ -142,7 +166,7 @@ export function ContactForm() {
         <p className="text-gray-300">Ready to bring your ideas to life? Let's discuss your project.</p>
       </div>
 
-      {error && (
+      {error && !isSubmitted && (
         <div className="text-sm text-red-400 bg-red-900/20 p-3 rounded-lg">
           <p className="font-semibold">Error:</p>
           <p>{error}</p>
