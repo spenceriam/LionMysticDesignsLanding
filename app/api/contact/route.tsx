@@ -15,45 +15,27 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Please enter a valid email address" }, { status: 400 })
     }
 
-    // Debug environment variables (safe logging - server-side only)
-    console.log("Environment check:")
-    console.log("NODE_ENV:", process.env.NODE_ENV)
-    console.log(
-      "Available env vars containing 'RESEND':",
-      Object.keys(process.env).filter((key) => key.includes("RESEND")),
-    )
-
-    // Only check for server-side environment variables (no NEXT_PUBLIC_ prefix)
+    // Get API key (server-side only)
     const resendApiKey = process.env.RESEND_API_KEY
 
     if (!resendApiKey) {
-      console.error("❌ RESEND_API_KEY not found in environment variables")
-      console.error("Available environment variables:", Object.keys(process.env).sort())
+      // Server-side logging only (not exposed to client)
+      console.error("RESEND_API_KEY environment variable not found")
 
       return NextResponse.json(
         {
           error: "Email service temporarily unavailable. Please contact us directly via Twitter/X.",
-          debug: "RESEND_API_KEY environment variable is missing",
-          env_debug: {
-            node_env: process.env.NODE_ENV,
-            available_resend_vars: Object.keys(process.env).filter((key) => key.includes("RESEND")),
-            total_env_vars: Object.keys(process.env).length,
-          },
         },
         { status: 500 },
       )
     }
 
-    console.log("✅ Resend API Key found:", resendApiKey.substring(0, 8) + "...")
-    console.log("🚀 Attempting to send email via Resend API...")
-
     // Validate API key format
     if (!resendApiKey.startsWith("re_")) {
-      console.error("❌ Invalid Resend API key format")
+      console.error("Invalid Resend API key format")
       return NextResponse.json(
         {
           error: "Email service configuration error",
-          debug: "Invalid API key format",
         },
         { status: 500 },
       )
@@ -87,7 +69,6 @@ export async function POST(request: NextRequest) {
               <div style="margin-top: 20px; font-size: 12px; color: #666;">
                 <p>Submitted: ${new Date().toLocaleString()}</p>
                 <p>Reply to: ${email}</p>
-                <p>Platform: Netlify</p>
               </div>
             </div>
           </div>
@@ -105,7 +86,6 @@ ${message}
 ---
 Submitted: ${new Date().toLocaleString()}
 Reply to: ${email}
-Platform: Netlify
         `.trim(),
       }),
     })
@@ -113,20 +93,21 @@ Platform: Netlify
     const responseData = await resendResponse.json()
 
     if (!resendResponse.ok) {
-      console.error("❌ Resend API Error:", {
+      // Server-side logging only
+      console.error("Resend API Error:", {
         status: resendResponse.status,
         statusText: resendResponse.statusText,
         data: responseData,
       })
 
-      // Handle specific Resend API errors
+      // Handle specific Resend API errors with user-friendly messages
       let errorMessage = "Failed to send email"
       if (resendResponse.status === 401) {
-        errorMessage = "Email service authentication failed - Invalid API key"
+        errorMessage = "Email service authentication failed"
       } else if (resendResponse.status === 403) {
-        errorMessage = "Email service access denied - Check domain verification"
+        errorMessage = "Email service access denied"
       } else if (resendResponse.status === 422) {
-        errorMessage = "Invalid email configuration - Check from/to addresses"
+        errorMessage = "Invalid email configuration"
       } else if (resendResponse.status === 429) {
         errorMessage = "Rate limit exceeded - Please try again later"
       }
@@ -134,17 +115,13 @@ Platform: Netlify
       return NextResponse.json(
         {
           error: errorMessage,
-          debug: {
-            status: resendResponse.status,
-            response: responseData,
-            api_key_prefix: resendApiKey.substring(0, 8),
-          },
         },
         { status: 500 },
       )
     }
 
-    console.log("✅ Email sent successfully via Resend:", responseData)
+    // Server-side success logging only
+    console.log("Email sent successfully via Resend:", responseData.id)
 
     return NextResponse.json({
       message: "Message sent successfully! We'll get back to you soon.",
@@ -153,23 +130,12 @@ Platform: Netlify
       timestamp: new Date().toISOString(),
     })
   } catch (error) {
-    console.error("❌ Contact API Error:", error)
-
-    // Enhanced error logging
-    if (error instanceof Error) {
-      console.error("Error name:", error.name)
-      console.error("Error message:", error.message)
-      console.error("Error stack:", error.stack)
-    }
+    // Server-side error logging only
+    console.error("Contact API Error:", error)
 
     return NextResponse.json(
       {
         error: "Internal server error. Please contact us directly via Twitter/X.",
-        debug: {
-          message: error instanceof Error ? error.message : "Unknown error",
-          type: error instanceof Error ? error.name : typeof error,
-          timestamp: new Date().toISOString(),
-        },
       },
       { status: 500 },
     )

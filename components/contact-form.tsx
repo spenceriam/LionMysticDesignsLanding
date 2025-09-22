@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -14,13 +14,12 @@ export function ContactForm() {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [message, setMessage] = useState("")
   const [error, setError] = useState("")
-  const [debugInfo, setDebugInfo] = useState<any>(null)
+  const formRef = useRef<HTMLFormElement>(null)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsSubmitting(true)
     setError("")
-    setDebugInfo(null)
 
     const formData = new FormData(e.currentTarget)
     const data = {
@@ -38,9 +37,6 @@ export function ContactForm() {
     }
 
     try {
-      console.log("🚀 Submitting contact form...")
-      console.log("Form data:", { ...data, message: data.message.substring(0, 50) + "..." })
-
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: {
@@ -50,10 +46,8 @@ export function ContactForm() {
       })
 
       const result = await response.json()
-      console.log("📨 API Response:", result)
 
       if (!response.ok) {
-        setDebugInfo(result.debug || result.env_debug)
         throw new Error(result.error || `HTTP ${response.status}`)
       }
 
@@ -62,11 +56,12 @@ export function ContactForm() {
 
       setMessage(result.message || "Message sent successfully!")
       setIsSubmitted(true)
-      e.currentTarget.reset()
 
-      console.log("✅ Contact form submitted successfully!")
+      // Safely reset the form
+      if (formRef.current) {
+        formRef.current.reset()
+      }
     } catch (error) {
-      console.error("❌ Contact form error:", error)
       const errorMessage = error instanceof Error ? error.message : "Failed to send message"
       setError(errorMessage)
 
@@ -114,12 +109,6 @@ export function ContactForm() {
           <div className="text-sm text-yellow-400 bg-yellow-900/20 p-3 rounded-lg">
             <p className="font-semibold">Technical Details:</p>
             <p className="text-xs opacity-75">{error}</p>
-            {debugInfo && (
-              <details className="mt-2">
-                <summary className="cursor-pointer text-xs opacity-50">Debug Info</summary>
-                <pre className="text-xs mt-1 opacity-50 overflow-auto">{JSON.stringify(debugInfo, null, 2)}</pre>
-              </details>
-            )}
           </div>
         )}
 
@@ -150,7 +139,6 @@ export function ContactForm() {
             setIsSubmitted(false)
             setMessage("")
             setError("")
-            setDebugInfo(null)
           }}
         >
           Send Another Message
@@ -173,7 +161,7 @@ export function ContactForm() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="name" className="text-white">
             Name *
